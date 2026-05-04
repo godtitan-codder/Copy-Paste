@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment Hub | Embedded Systems</title>
+  <meta name="description" content="A curated Embedded Systems C code library for college practical exams. Search, copy, and paste STM32 experiments instantly." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-inner">
+      <div class="nav-brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-microchip"></i>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Experiment Hub</span>
+          <span class="brand-sub">Embedded Systems Library</span>
+        </div>
+      </div>
+      <div class="nav-search">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Search experiments..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <span class="search-clear" id="searchClear" title="Clear">
+          <i class="fa-solid fa-xmark"></i>
+        </span>
+      </div>
+      <div class="nav-stats">
+        <span id="resultCount" class="result-count">20 experiments</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1 class="hero-title">
+        <span class="gradient-text">Embedded C Code</span> at Your Fingertips
+      </h1>
+      <p class="hero-subtitle">
+        Browse STM32 practical experiments. One click to copy, zero friction during lab exams.
+      </p>
+      <div class="hero-pills">
+        <span class="pill"><i class="fa-solid fa-bolt"></i> Instant Copy</span>
+        <span class="pill"><i class="fa-solid fa-magnifying-glass"></i> Live Search</span>
+        <span class="pill"><i class="fa-solid fa-mobile-screen"></i> Mobile Ready</span>
+      </div>
+    </div>
+    <div class="hero-glow"></div>
+  </section>
+
+  <!-- EXPERIMENTS GRID -->
+  <main class="main-content" id="main">
+    <div class="experiments-grid" id="experimentsGrid">
+      <!-- Cards injected by script.js -->
+    </div>
+    <div class="no-results" id="noResults" hidden>
+      <i class="fa-solid fa-circle-xmark"></i>
+      <p>No experiments matched "<span id="noResultsQuery"></span>"</p>
+      <small>Try a different keyword</small>
+    </div>
+  </main>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <footer class="footer">
+    <p>Built for lab exams &nbsp;·&nbsp; <span class="footer-accent">Java Experiment Hub</span></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -893,6 +893,7 @@ public class LogoutServlet extends HttpServlet {
     id: 11, expNum: 10, subLabel: "HTTP / URL Rewriting (2/3)",
     title: "Servlet HTTP — URL Rewriting Session",
     assignment: "Experiment 10: Session Tracking — URL Rewriting",
+    pdfUrl: "files/EXP 10.2 Session management using URLRewiting - Copy.pdf",
     desc: "URL Rewriting example: FirstServlet appends the username to a hyperlink URL; SecondServlet reads it from the query string.",
     codes: [
       {
@@ -994,6 +995,7 @@ public class SecondServlet extends HttpServlet {
     id: 12, expNum: 10, subLabel: "Session Tracking (3/3)",
     title: "Servlet HttpSession — Login, Profile & Logout",
     assignment: "Experiment 10: Session Tracking — HttpSession",
+    pdfUrl: "files/EXP 10.3 Session management using HTTP Session.pdf",
     desc: "HttpSession-based login: LoginServlet stores name in session, ProfileServlet retrieves it, LogoutServlet invalidates the session. Password: admin123",
     codes: [
       {

@@ -30,6 +30,7 @@ const experiments = [
     id: 1, expNum: 1,
     title: "Key Listener (Applet)",
     assignment: "Experiment 1: Applet — Key Listener",
+    pdfUrl: null,
     desc: "Demonstrates KeyListener interface on a TextArea inside an AWT Frame. Labels update on key pressed, released, and typed events.",
     lang: "Java",
     code: `import java.awt.*;
@@ -85,6 +86,7 @@ public class KeyListener_Example extends Frame implements KeyListener {
     id: 2, expNum: 2,
     title: "Mouse Listener",
     assignment: "Experiment 2: Mouse Listener",
+    pdfUrl: "files/EXP 2 Mouse listner (2).pdf",
     desc: "Implements MouseListener on an AWT Frame. A Label reflects mouseClicked, mouseEntered, mouseExited, mousePressed, and mouseReleased events.",
     lang: "Java",
     code: `import java.awt.*;
@@ -143,6 +145,7 @@ public class MouseListeners extends Frame implements MouseListener {
     id: 3, expNum: 3,
     title: "GUI",
     assignment: "Experiment 3: GUI",
+    pdfUrl: "files/EXP3.pdf",
     desc: "Code coming soon — will be added once the experiment writeup is shared.",
     lang: "Java",
     code: `// Code will be added here`
@@ -151,6 +154,7 @@ public class MouseListeners extends Frame implements MouseListener {
     id: 4, expNum: 4,
     title: "JDBC — Insert & Retrieve from MySQL",
     assignment: "Experiment 4: JDBC (Java Database Connectivity)",
+    pdfUrl: "files/EXP 4 JDBC.pdf",
     desc: "Connects to MySQL via DriverManager, inserts a row using PreparedStatement, then retrieves and prints all rows from the Players table.",
     codes: [
       {
@@ -253,6 +257,7 @@ SELECT * FROM Players;`
     id: 5, expNum: 5,
     title: "RMI — Palindrome Checker",
     assignment: "Experiment 5: RMI (Remote Method Invocation) — Palindrome",
+    pdfUrl: "files/EXP 5 RMI (Palindrome).pdf",
     desc: "Three-file RMI setup: a Remote interface, a Server that registers on port 9999, and a Client that invokes the palindrome check remotely.",
     codes: [
       {
@@ -345,6 +350,7 @@ public class PalindromeClient {
     id: 6, expNum: 6, subLabel: "HTTP",
     title: "InetAddress — Hostname & Reverse Lookup",
     assignment: "Experiment 6: HTTP — InetAddress",
+    pdfUrl: "files/EXP 6 IPADRESS.pdf",
     desc: "Two utilities: InetADRESS resolves a hostname to its IP address; InetAddressReverse performs reverse DNS to get the hostname from an IP.",
     codes: [
       {
@@ -422,6 +428,7 @@ public class InetAddressReverse {
     id: 7, expNum: 7,
     title: "Servlets — Login & Validation",
     assignment: "Experiment 7: Servlets",
+    pdfUrl: "files/exp 7.pdf",
     desc: "Three-file Servlet project: an HTML login form, a Java Servlet that validates credentials and dispatches, and a Welcome HTML page.",
     codes: [
       {
@@ -542,6 +549,7 @@ Login Confirmed!!
     id: 8, expNum: 8,
     title: "RMI — Calculator",
     assignment: "Experiment 8: RMI Calculator",
+    pdfUrl: "files/EXP 8 RMI (Addition).pdf",
     desc: "Four-file RMI Calculator: a Remote interface, an implementation, a Server that binds on port 1099, and a Client that calls add() and subtract().",
     codes: [
       {
@@ -654,6 +662,7 @@ public class CalculatorClient {
     id: 9, expNum: 9,
     title: "JSP — Current Date & Time",
     assignment: "Experiment 9: JSP Page",
+    pdfUrl: "files/EXP 9.pdf",
     desc: "A simple JSP page that imports java.util.Date and prints the current date, time, and day using a scriptlet with out.println().",
     lang: "JSP",
     code: `<%@ page import="java.util.Date" %>
@@ -679,6 +688,7 @@ public class CalculatorClient {
     id: 10, expNum: 10, subLabel: "Cookies (1/3)",
     title: "Servlet Cookie — Login, Profile & Logout",
     assignment: "Experiment 10: Session Tracking — Cookies",
+    pdfUrl: "files/EXP 10.1 Session management using Cookies - Copy - Copy (1).pdf",
     desc: "Cookie-based login flow: LoginServlet sets a cookie on success, ProfileServlet reads it, LogoutServlet expires it. Password: admin123",
     codes: [
       {
@@ -1252,10 +1262,16 @@ function createCard(exp, delayMs){
         <div class="card-title">${escHtml(exp.title)}</div>
         <div class="card-desc">${escHtml(exp.desc)}</div>
       </div>
-      <button class="copy-btn" aria-label="Copy code">
-        <i class="fa-regular fa-copy"></i>
-        <span class="btn-label">Copy</span>
-      </button>
+      <div class="card-actions">
+        <button class="copy-btn" aria-label="Copy code">
+          <i class="fa-regular fa-copy"></i>
+          <span class="btn-label">Copy</span>
+        </button>
+        <button class="pdf-btn" aria-label="Download PDF">
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <span class="btn-label">PDF</span>
+        </button>
+      </div>
     </div>
     <div class="code-wrapper">
       ${tabsHtml}
@@ -1332,6 +1348,116 @@ function createCard(exp, delayMs){
     }).catch(() => {
       showToast('Copy failed — try again', 'error');
     });
+  });
+
+  /* ── PDF Download button ───────────────────────────────────────────────── */
+  const pdfBtn   = card.querySelector('.pdf-btn');
+  const pdfLabel = pdfBtn.querySelector('.btn-label');
+  const pdfIcon  = pdfBtn.querySelector('i');
+
+  /* If no PDF file at all, dim the button */
+  if(!exp.pdfUrl){
+    pdfBtn.classList.add('pdf-unavailable');
+    pdfBtn.title = 'No PDF available for this experiment yet';
+  }
+
+  pdfBtn.addEventListener('click', () => {
+    /* ── Priority 1: real file download ── */
+    if(exp.pdfUrl){
+      const a = document.createElement('a');
+      a.href     = exp.pdfUrl;
+      a.download = exp.pdfUrl.split('/').pop();   // use the actual filename
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      /* Visual feedback */
+      pdfBtn.classList.add('pdf-downloading');
+      pdfIcon.className      = 'fa-solid fa-check';
+      pdfLabel.textContent   = 'Done!';
+      showToast(`PDF downloaded!`, 'success');
+      setTimeout(() => {
+        pdfBtn.classList.remove('pdf-downloading');
+        pdfIcon.className    = 'fa-solid fa-file-arrow-down';
+        pdfLabel.textContent = 'PDF';
+      }, 2200);
+      return;
+    }
+
+    /* ── Fallback: generate PDF from code (for experiments with no file) ── */
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+
+    const PW  = doc.internal.pageSize.getWidth();
+    const PH  = doc.internal.pageSize.getHeight();
+    const ML  = 40, MR = 40, MT = 48;
+    const CW  = PW - ML - MR;
+    let y = MT;
+
+    const ASSIGN_FS = 10, DESC_FS = 10, CODE_FS = 8;
+    const LINE_H    = CODE_FS * 1.55;
+
+    function checkPage(needed=14){
+      if(y + needed > PH - 32){
+        doc.addPage();
+        doc.setFontSize(8); doc.setTextColor(150,150,150); doc.setFont('helvetica','normal');
+        doc.text(exp.assignment, ML, 24);
+        y = MT;
+      }
+    }
+
+    doc.setFillColor(20,22,32); doc.rect(0,0,PW,82,'F');
+    doc.setFontSize(18); doc.setTextColor(251,146,60); doc.setFont('helvetica','bold');
+    doc.text(exp.assignment, ML, 34);
+    doc.setFontSize(16); doc.setTextColor(220,230,240); doc.setFont('helvetica','bold');
+    doc.text(exp.title, ML, 54);
+    doc.setFontSize(DESC_FS); doc.setTextColor(140,160,180); doc.setFont('helvetica','normal');
+    const descLines = doc.splitTextToSize(exp.desc, CW);
+    doc.text(descLines, ML, 70);
+    y = 98 + (descLines.length > 1 ? (descLines.length-1)*DESC_FS*1.3 : 0);
+    doc.setDrawColor(60,70,90); doc.setLineWidth(0.5); doc.line(ML,y,PW-MR,y); y+=14;
+
+    codes.forEach((c,ci) => {
+      checkPage(30);
+      if(codes.length > 1){
+        doc.setFillColor(30,36,52); doc.roundedRect(ML,y-10,CW,20,3,3,'F');
+        doc.setFontSize(ASSIGN_FS); doc.setTextColor(251,146,60); doc.setFont('helvetica','bold');
+        doc.text(`[ ${c.label} ]  —  ${c.lang}`, ML+8, y+4); y+=24;
+      } else {
+        doc.setFontSize(ASSIGN_FS); doc.setTextColor(100,160,220); doc.setFont('helvetica','bold');
+        doc.text(c.lang, ML, y); y+=14;
+      }
+      c.code.split('\n').forEach(line => {
+        checkPage(LINE_H+4);
+        doc.setFillColor(13,17,23); doc.rect(ML,y-CODE_FS,CW,LINE_H,'F');
+        doc.setTextColor(200,220,240); doc.setFontSize(CODE_FS); doc.setFont('courier','normal');
+        doc.text(line.replace(/\t/g,'    '), ML+6, y, {maxWidth: CW-12});
+        y += LINE_H;
+      });
+      y+=10;
+      if(ci < codes.length-1){
+        checkPage(20); doc.setDrawColor(50,60,80); doc.setLineWidth(0.4);
+        doc.line(ML,y,PW-MR,y); y+=14;
+      }
+    });
+
+    const tp = doc.internal.getNumberOfPages();
+    for(let p=1;p<=tp;p++){
+      doc.setPage(p); doc.setFontSize(8); doc.setTextColor(90,100,120); doc.setFont('helvetica','normal');
+      doc.text(`Java Experiment Hub  ·  ${exp.assignment}`, ML, PH-16);
+      doc.text(`Page ${p} / ${tp}`, PW-MR, PH-16, {align:'right'});
+    }
+
+    const filename = `Exp${String(exp.expNum).padStart(2,'0')}_${exp.title.replace(/[^a-zA-Z0-9]+/g,'_')}.pdf`;
+    doc.save(filename);
+
+    pdfBtn.classList.add('pdf-downloading');
+    pdfIcon.className = 'fa-solid fa-check'; pdfLabel.textContent = 'Done!';
+    showToast(`PDF downloaded: ${filename}`, 'success');
+    setTimeout(() => {
+      pdfBtn.classList.remove('pdf-downloading');
+      pdfIcon.className = 'fa-solid fa-file-arrow-down'; pdfLabel.textContent = 'PDF';
+    }, 2200);
   });
 
   return card;

@@ -1,140 +1,1248 @@
 /* ── EXPERIMENTS DATA ────────────────────────────────────────────────────── */
+/*
+  SINGLE-CODE experiment shape:
+  {
+    id: 1,
+    expNum: 1,
+    subLabel: "Part 1 / 2",     // optional
+    title: "Experiment Title",
+    assignment: "Experiment N: Full Title",
+    desc: "Short description.",
+    lang: "Java",
+    code: `...java code...`
+  }
+
+  MULTI-CODE experiment shape (e.g. Java + SQL tabs):
+  {
+    id: 4,
+    expNum: 4,
+    title: "Experiment Title",
+    assignment: "Experiment 4: Full Title",
+    desc: "Short description.",
+    codes: [
+      { label: "Java", lang: "Java", code: `...java code...` },
+      { label: "SQL",  lang: "SQL",  code: `...sql queries...` }
+    ]
+  }
+*/
 const experiments = [
   {
-    id:1, expNum:2, subLabel:"Pattern 1 / 4",
-    title:"Left to Right LED Pattern",
-    assignment:"Assignment 3: Bare Metal Programming — External LEDs",
-    desc:"Shift a single active-high LED from PA0 to PA7 one step at a time using direct ODR register writes.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nvoid delay(void){\n    for(volatile int i = 0; i < 1000000; i++);\n}\n\nint main(void){\n    RCC->AHB1ENR |= (1 << 0);          /* Enable GPIOA clock */\n\n    for(int i = 0; i < 8; i++){\n        GPIOA->MODER &= ~(3 << (i*2));\n        GPIOA->MODER |=  (1 << (i*2)); /* Output mode */\n        GPIOA->PUPDR &= ~(3 << (i*2)); /* No pull */\n    }\n\n    while(1){\n        for(int i = 0; i < 8; i++){\n            GPIOA->ODR = (1 << i);\n            delay();\n            GPIOA->ODR &= ~(1 << i);\n        }\n    }\n}`
+    id: 1, expNum: 1,
+    title: "Key Listener (Applet)",
+    assignment: "Experiment 1: Applet — Key Listener",
+    desc: "Demonstrates KeyListener interface on a TextArea inside an AWT Frame. Labels update on key pressed, released, and typed events.",
+    lang: "Java",
+    code: `import java.awt.*;
+import java.awt.event.*;
+
+public class KeyListener_Example extends Frame implements KeyListener {
+
+    Label l;
+    TextArea area;
+
+    KeyListener_Example() {
+
+        l = new Label();
+        l.setBounds(20, 50, 100, 20);
+
+        area = new TextArea();
+        area.setBounds(20, 80, 300, 300);
+
+        area.addKeyListener(this);
+
+        add(l);
+        add(area);
+
+        setSize(400, 400);
+        setLayout(null);
+        setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
+    }
+
+    public void keyPressed(KeyEvent e) {
+        l.setText("Key Pressed");
+    }
+
+    public void keyReleased(KeyEvent e) {
+        l.setText("Key Released");
+    }
+
+    public void keyTyped(KeyEvent e) {
+        l.setText("Key Typed");
+    }
+
+    public static void main(String[] args) {
+        new KeyListener_Example();
+    }
+}`
   },
   {
-    id:2, expNum:2, subLabel:"Pattern 2 / 4",
-    title:"Right to Left LED Pattern",
-    assignment:"Assignment 3: Bare Metal Programming — External LEDs",
-    desc:"Shift a single active-high LED from PA7 to PA0 using a decrementing loop and direct ODR writes.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nvoid delay(void){\n    for(volatile int i = 0; i < 1000000; i++);\n}\n\nint main(void){\n    RCC->AHB1ENR |= (1 << 0);\n\n    for(int i = 0; i < 8; i++){\n        GPIOA->MODER &= ~(3 << (i*2));\n        GPIOA->MODER |=  (1 << (i*2));\n        GPIOA->PUPDR &= ~(3 << (i*2));\n    }\n\n    while(1){\n        for(int i = 7; i >= 0; i--){\n            GPIOA->ODR = (1 << i);\n            delay();\n        }\n    }\n}`
+    id: 2, expNum: 2,
+    title: "Mouse Listener",
+    assignment: "Experiment 2: Mouse Listener",
+    desc: "Implements MouseListener on an AWT Frame. A Label reflects mouseClicked, mouseEntered, mouseExited, mousePressed, and mouseReleased events.",
+    lang: "Java",
+    code: `import java.awt.*;
+import java.awt.event.*;
+
+public class MouseListeners extends Frame implements MouseListener {
+
+    Label l;
+
+    MouseListeners() {
+
+        addMouseListener(this);
+
+        l = new Label();
+        l.setBounds(20, 50, 100, 20);
+
+        add(l);
+
+        setSize(300, 300);
+        setLayout(null);
+        setVisible(true);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
+    }
+
+    public void mouseClicked(MouseEvent e) {
+        l.setText("Mouse Clicked");
+    }
+
+    public void mouseEntered(MouseEvent e) {
+        l.setText("Mouse Entered");
+    }
+
+    public void mouseExited(MouseEvent e) {
+        l.setText("Mouse Exited");
+    }
+
+    public void mousePressed(MouseEvent e) {
+        l.setText("Mouse Pressed");
+    }
+
+    public void mouseReleased(MouseEvent e) {
+        l.setText("Mouse Released");
+    }
+
+    public static void main(String[] args) {
+        new MouseListeners();
+    }
+}`
   },
   {
-    id:3, expNum:2, subLabel:"Pattern 3 / 4",
-    title:"Alternate LED Pattern",
-    assignment:"Assignment 3: Bare Metal Programming — External LEDs",
-    desc:"Toggle even and odd LEDs alternately (0x55 vs 0xAA) to produce a chess-board blink effect.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nvoid delay(void){\n    for(volatile int i = 0; i < 1000000; i++);\n}\n\nint main(void){\n    RCC->AHB1ENR |= (1 << 0);\n\n    for(int i = 0; i < 8; i++){\n        GPIOA->MODER &= ~(3 << (i*2));\n        GPIOA->MODER |=  (1 << (i*2));\n        GPIOA->PUPDR &= ~(3 << (i*2));\n    }\n\n    while(1){\n        GPIOA->ODR = 0x55;  /* 0101 0101 */\n        delay();\n        GPIOA->ODR = 0xAA;  /* 1010 1010 */\n        delay();\n    }\n}`
+    id: 3, expNum: 3,
+    title: "GUI",
+    assignment: "Experiment 3: GUI",
+    desc: "Code coming soon — will be added once the experiment writeup is shared.",
+    lang: "Java",
+    code: `// Code will be added here`
   },
   {
-    id:4, expNum:2, subLabel:"Pattern 4 / 4",
-    title:"Curtain LED Pattern",
-    assignment:"Assignment 3: Bare Metal Programming — External LEDs",
-    desc:"LEDs close inward from both ends simultaneously (PA0+PA7, PA1+PA6 ...) like a closing curtain.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nvoid delay(void){\n    for(volatile int i = 0; i < 1000000; i++);\n}\n\nint main(void){\n    RCC->AHB1ENR |= (1 << 0);\n\n    for(int i = 0; i < 8; i++){\n        GPIOA->MODER &= ~(3 << (i*2));\n        GPIOA->MODER |=  (1 << (i*2));\n        GPIOA->PUPDR &= ~(3 << (i*2));\n    }\n\n    while(1){\n        for(int i = 0; i < 4; i++){\n            GPIOA->ODR = (1 << i) | (1 << (7 - i));\n            delay();\n        }\n    }\n}`
+    id: 4, expNum: 4,
+    title: "JDBC — Insert & Retrieve from MySQL",
+    assignment: "Experiment 4: JDBC (Java Database Connectivity)",
+    desc: "Connects to MySQL via DriverManager, inserts a row using PreparedStatement, then retrieves and prints all rows from the Players table.",
+    codes: [
+      {
+        label: "Java", lang: "Java",
+        code: `package jdbc;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class JDBC {
+
+    public static void main(String args[]) throws SQLException {
+
+        // Getting the connection
+        String mysqlUrl = "jdbc:mysql://localhost:3306/testdb2";
+
+        Connection con = DriverManager.getConnection(mysqlUrl, "root", "entc@123");
+
+        System.out.println("Connection established......");
+
+        // Creating the Statement
+        Statement stmt = con.createStatement();
+
+        // Insert a row into the Players table
+        PreparedStatement pstmt = con.prepareStatement(
+                "INSERT INTO Players values (?, ?, ?, ?, ?, ?)");
+
+        pstmt.setInt(1, 10);
+        pstmt.setString(2, "Abhay");
+        pstmt.setString(3, "Chindhe");
+        pstmt.setDate(4, new Date(513596800000L));
+        pstmt.setString(5, "Ahilyanagar");
+        pstmt.setString(6, "India");
+
+        pstmt.executeUpdate();
+
+        // Query to retrieve records
+        String query = "Select * from Players";
+
+        // Executing the query
+        ResultSet rs = stmt.executeQuery(query);
+
+        while (rs.next()) {
+
+            int id = rs.getInt("ID");
+            String first_name = rs.getString("First_Name");
+            String last_name = rs.getString("Last_Name");
+            Date date_of_birth = rs.getDate("Date_Of_Birth");
+            String place_of_birth = rs.getString("Place_Of_Birth");
+            String country = rs.getString("Country");
+
+            System.out.print("Id: " + id + ", ");
+            System.out.print("First Name: " + first_name + ", ");
+            System.out.print("Last Name: " + last_name + ", ");
+            System.out.print("Date Of Birth: " + date_of_birth + ", ");
+            System.out.print("Place Of Birth: " + place_of_birth + ", ");
+            System.out.print("Country: " + country);
+
+            System.out.println(" ");
+        }
+
+        con.close();
+    }
+}`
+      },
+      {
+        label: "MySQL", lang: "SQL",
+        code: `DROP DATABASE IF EXISTS testdb2;
+CREATE DATABASE testdb2;
+USE testdb2;
+
+CREATE TABLE Players (
+    ID             INT,
+    First_Name     VARCHAR(255),
+    Last_Name      VARCHAR(255),
+    Date_Of_Birth  DATE,
+    Place_Of_Birth VARCHAR(255),
+    Country        VARCHAR(255),
+    PRIMARY KEY (ID)
+);
+
+INSERT INTO Players VALUES (1, 'Shikhar',   'Dhawan',     DATE('1981-12-05'), 'Delhi',    'India');
+INSERT INTO Players VALUES (2, 'Jonathan',  'Trott',      DATE('1981-04-22'), 'CapeTown', 'SouthAfrica');
+INSERT INTO Players VALUES (3, 'Kumara',    'Sangakkara', DATE('1977-10-27'), 'Matale',   'Srilanka');
+INSERT INTO Players VALUES (4, 'Virat',     'Kohli',      DATE('1988-11-05'), 'Delhi',    'India');
+INSERT INTO Players VALUES (5, 'Rohit',     'Sharma',     DATE('1987-04-30'), 'Nagpur',   'India');
+INSERT INTO Players VALUES (6, 'Ravindra',  'Jadeja',     DATE('1988-12-06'), 'Nagpur',   'India');
+INSERT INTO Players VALUES (7, 'James',     'Anderson',   DATE('1982-06-30'), 'Burnley',  'England');
+
+SELECT * FROM Players;`
+      }
+    ]
   },
   {
-    id:5, expNum:3,
-    title:"USART2 Receive & Transmit — Echo Program",
-    assignment:"Assignment 4: USART Communication — Echo Program",
-    desc:"Configure USART2 at 9600 baud (8 MHz HSE). Every byte received on PA3 (RX) is echoed back on PA2 (TX).",
-    lang:"C",
-    code: `#include "stm32f407xx.h"\n\nvoid SystemClock_8MHz(void);\nvoid USART2_Init(void);\nvoid USART2_SendChar(char c);\nchar USART2_ReceiveChar(void);\nvoid USART2_SendString(char *str);\n\nint main(void){\n    char rx;\n    SystemClock_8MHz();\n    USART2_Init();\n    USART2_SendString("USART @ 8MHz\\r\\n");\n    while (1){\n        rx = USART2_ReceiveChar();\n        USART2_SendChar(rx);\n    }\n}\n\nvoid SystemClock_8MHz(void){\n    RCC->CR |= RCC_CR_HSEON;\n    while (!(RCC->CR & RCC_CR_HSERDY));\n    RCC->CFGR &= ~RCC_CFGR_SW;\n    RCC->CFGR |=  RCC_CFGR_SW_HSE;\n    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_HSE);\n}\n\nvoid USART2_Init(void){\n    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;\n    RCC->APB1ENR |= RCC_APB1ENR_USART2EN;\n\n    GPIOA->MODER &= ~((3<<4)|(3<<6));\n    GPIOA->MODER |=  (2<<4)|(2<<6);     /* Alternate Function */\n    GPIOA->AFR[0] &= ~((0xF<<8)|(0xF<<12));\n    GPIOA->AFR[0] |=   (7<<8)|(7<<12);  /* AF7 = USART2 */\n\n    USART2->CR1 = 0; USART2->CR2 = 0; USART2->CR3 = 0;\n    USART2->BRR  = 0x0341;              /* 9600 baud @ 8 MHz */\n    USART2->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;\n}\n\nvoid USART2_SendChar(char c){\n    while (!(USART2->SR & USART_SR_TXE));\n    USART2->DR = c;\n}\n\nchar USART2_ReceiveChar(void){\n    while (!(USART2->SR & USART_SR_RXNE));\n    return USART2->DR;\n}\n\nvoid USART2_SendString(char *str){\n    while (*str) USART2_SendChar(*str++);\n}`
+    id: 5, expNum: 5,
+    title: "RMI — Palindrome Checker",
+    assignment: "Experiment 5: RMI (Remote Method Invocation) — Palindrome",
+    desc: "Three-file RMI setup: a Remote interface, a Server that registers on port 9999, and a Client that invokes the palindrome check remotely.",
+    codes: [
+      {
+        label: "Interface", lang: "Java",
+        code: `import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface PalindromeChecker extends Remote {
+
+    public boolean checkPalindrome(String s) throws RemoteException;
+
+}`
+      },
+      {
+        label: "Server", lang: "Java",
+        code: `import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class PalindromeServer extends UnicastRemoteObject implements PalindromeChecker {
+
+    public PalindromeServer() throws RemoteException {
+        super();
+    }
+
+    @Override
+    public boolean checkPalindrome(String s) throws RemoteException {
+
+        // remove all non-alphanumeric characters and convert to lowercase
+        String cleanString = s.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+
+        // reverse string
+        String reversedString = new StringBuilder(cleanString).reverse().toString();
+
+        return cleanString.equals(reversedString);
+    }
+
+    public static void main(String[] args) {
+
+        try {
+
+            Registry registry = LocateRegistry.createRegistry(9999);
+
+            registry.rebind("PalindromeChecker", new PalindromeServer());
+
+            System.out.println("PalindromeChecker server ready.");
+
+        } catch (RemoteException e) {
+
+            System.out.println("exception " + e);
+
+        }
+    }
+}`
+      },
+      {
+        label: "Client", lang: "Java",
+        code: `import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+
+public class PalindromeClient {
+
+    public static void main(String[] args) {
+
+        try {
+
+            Registry registry = LocateRegistry.getRegistry("localhost", 9999);
+
+            PalindromeChecker checker =
+                (PalindromeChecker) registry.lookup("PalindromeChecker");
+
+            String[] testWords = { "racecar", "hello", "madam", "world", "level" };
+
+            for (String word : testWords) {
+                System.out.println(word + " -> " + checker.checkPalindrome(word));
+            }
+
+        } catch (Exception e) {
+
+            System.out.println("exception " + e);
+
+        }
+    }
+}`
+      }
+    ]
   },
   {
-    id:6, expNum:4,
-    title:"GPS Raw NMEA Data Reception (UART Echo)",
-    assignment:"Experiment 4: GPS Reception — Extract Location Coordinates via STM32",
-    desc:"Receive raw NMEA sentences from a GPS module on USART2 and echo every byte to a serial terminal for parsing.",
-    lang:"C",
-    code: `#include "stm32f407xx.h"\n\nvoid SystemClock_8MHz(void);\nvoid USART2_Init(void);\nvoid USART2_SendChar(char c);\nchar USART2_ReceiveChar(void);\nvoid USART2_SendString(char *str);\n\nint main(void){\n    char rx;\n    SystemClock_8MHz();\n    USART2_Init();\n    USART2_SendString("USART2 @8MHz\\r\\n");\n    while (1){\n        rx = USART2_ReceiveChar();  /* Read GPS byte */\n        USART2_SendChar(rx);        /* Echo to terminal */\n    }\n}\n\nvoid SystemClock_8MHz(void){\n    RCC->CR |= RCC_CR_HSEON;\n    while (!(RCC->CR & RCC_CR_HSERDY));\n    RCC->CFGR |= RCC_CFGR_SW_HSE;\n    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_HSE);\n}\n\nvoid USART2_Init(void){\n    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;\n    RCC->APB1ENR |= RCC_APB1ENR_USART2EN;\n    GPIOA->MODER |= (2<<4)|(2<<6);\n    GPIOA->AFR[0] |= (7<<8)|(7<<12);\n    USART2->BRR = 0x0341;\n    USART2->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;\n}\n\nvoid USART2_SendChar(char c){\n    while (!(USART2->SR & USART_SR_TXE));\n    USART2->DR = c;\n}\n\nchar USART2_ReceiveChar(void){\n    while (!(USART2->SR & USART_SR_RXNE));\n    return USART2->DR;\n}\n\nvoid USART2_SendString(char *str){\n    while (*str) USART2_SendChar(*str++);\n}`
+    id: 6, expNum: 6, subLabel: "HTTP",
+    title: "InetAddress — Hostname & Reverse Lookup",
+    assignment: "Experiment 6: HTTP — InetAddress",
+    desc: "Two utilities: InetADRESS resolves a hostname to its IP address; InetAddressReverse performs reverse DNS to get the hostname from an IP.",
+    codes: [
+      {
+        label: "InetADRESS", lang: "Java",
+        code: `import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+
+public class InetADRESS {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter Host Name");
+
+        String host = sc.next();
+
+        try {
+
+            // Get InetAddress object
+            InetAddress ip = InetAddress.getByName(host);
+
+            System.out.println("IP Address is: "
+                    + ip.getHostAddress());
+
+        } catch (UnknownHostException e) {
+
+            System.out.println("Error: "
+                    + e.getMessage());
+        }
+
+        sc.close();
+    }
+}`
+      },
+      {
+        label: "InetAddressReverse", lang: "Java",
+        code: `import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Scanner;
+
+public class InetAddressReverse {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter IP Address:");
+
+        String ipInput = sc.next();
+
+        try {
+
+            InetAddress ip =
+                    InetAddress.getByName(ipInput);
+
+            // Fetch host name from IP
+            System.out.println("Host Name is: "
+                    + ip.getHostName());
+
+        } catch (UnknownHostException e) {
+
+            System.out.println("Invalid IP Address: "
+                    + e.getMessage());
+        }
+
+        sc.close();
+    }
+}`
+      }
+    ]
   },
   {
-    id:7, expNum:5,
-    title:"GLCD Interfacing — Display Pattern",
-    assignment:"Assignment 5: Interfacing GLCD with STM32 Processor",
-    desc:"Drive a 128x64 GLCD via GPIOD (8-bit data bus) and GPIOC (RS/RW/EN/CS1/CS2/RST control lines).",
-    lang:"C",
-    code: `#include "stm32f407xx.h"\n\n#define RS  0\n#define RW  1\n#define EN  2\n#define CS1 3\n#define CS2 4\n#define RST 5\n\nvoid delay(void){\n    for(volatile int i = 0; i < 5000; i++);\n}\n\nvoid GLCD_GPIO_Init(void){\n    RCC->AHB1ENR |= 0x0C;         /* Enable GPIOC and GPIOD */\n\n    for(int i = 0; i < 8; i++){\n        GPIOD->MODER &= ~(3 << (i*2));\n        GPIOD->MODER |=  (1 << (i*2));\n    }\n    for(int i = 0; i <= 5; i++){\n        GPIOC->MODER &= ~(3 << (i*2));\n        GPIOC->MODER |=  (1 << (i*2));\n    }\n}\n\nvoid GLCD_Enable(void){\n    GPIOC->ODR |=  (1 << EN);\n    delay();\n    GPIOC->ODR &= ~(1 << EN);\n    delay();\n}\n\nvoid GLCD_Command(unsigned char cmd){\n    GPIOD->ODR  = cmd;\n    GPIOC->ODR &= ~(1 << RS);\n    GLCD_Enable();\n}\n\nvoid GLCD_Data(unsigned char data){\n    GPIOD->ODR  = data;\n    GPIOC->ODR |=  (1 << RS);\n    GLCD_Enable();\n}\n\nint main(void){\n    GLCD_GPIO_Init();\n    GLCD_Command(0x3F);\n    GLCD_Command(0xC0);\n    while(1){}\n}`
+    id: 7, expNum: 7,
+    title: "Servlets — Login & Validation",
+    assignment: "Experiment 7: Servlets",
+    desc: "Three-file Servlet project: an HTML login form, a Java Servlet that validates credentials and dispatches, and a Welcome HTML page.",
+    codes: [
+      {
+        label: "index.html", lang: "HTML",
+        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<form action="valid" method="post">
+
+    Enter UserName :
+    <input type="text" name="uname" />
+    <br><br>
+
+    Enter Password :
+    <input type="password" name="upass" />
+    <br><br>
+
+    <input type="submit" value="Login" />
+
+</form>
+
+</body>
+</html>`
+      },
+      {
+        label: "valid.java", lang: "Java",
+        code: `import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.RequestDispatcher;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+public class valid extends HttpServlet {
+
+    protected void processRequest(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html;charset=UTF-8");
+
+        try (PrintWriter out = response.getWriter()) {
+
+            String uname = request.getParameter("uname");
+            String upass = request.getParameter("upass");
+
+            if (upass.equals("password123")) {
+
+                RequestDispatcher reqDisp =
+                        request.getRequestDispatcher("/Welcome.html");
+
+                reqDisp.forward(request, response);
+
+            } else {
+
+                out.println("Sorry username or password error");
+
+                RequestDispatcher reqDisp =
+                        request.getRequestDispatcher("/index.html");
+
+                reqDisp.include(request, response);
+            }
+        }
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        processRequest(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        processRequest(request, response);
+    }
+
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }
+}`
+      },
+      {
+        label: "Welcome.html", lang: "HTML",
+        code: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<h1>Welcome to the page</h1>
+
+Login Confirmed!!
+
+</body>
+</html>`
+      }
+    ]
   },
   {
-    id:8, expNum:6, subLabel:"Waveform 1 / 2",
-    title:"Square Waveform Generation via DAC",
-    assignment:"Assignment 6: Generate Waveforms Using DAC on STM32",
-    desc:"Output a square wave on DAC Channel 1 (PA4) by alternating between full-scale (4095) and 0.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nvoid delay(void){\n    for(int i = 0; i < 1000; i++);\n}\n\nvoid DAC_init(void){\n    RCC->AHB1ENR |= (1 << 0);\n    GPIOA->MODER |=  (3 << 8);\n    RCC->APB1ENR |= (1 << 29);\n    DAC->CR      |= (1 << 0);\n}\n\nint main(void){\n    DAC_init();\n    while(1){\n        DAC->DHR12R1 = 4095;\n        delay();\n        DAC->DHR12R1 = 0;\n        delay();\n    }\n}`
+    id: 8, expNum: 8,
+    title: "RMI — Calculator",
+    assignment: "Experiment 8: RMI Calculator",
+    desc: "Four-file RMI Calculator: a Remote interface, an implementation, a Server that binds on port 1099, and a Client that calls add() and subtract().",
+    codes: [
+      {
+        label: "Interface", lang: "Java",
+        code: `import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Calculator extends Remote {
+
+    int add(int x, int y) throws RemoteException;
+
+    int subtract(int x, int y) throws RemoteException;
+}`
+      },
+      {
+        label: "Impl", lang: "Java",
+        code: `import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class CalculatorImpl extends UnicastRemoteObject
+        implements Calculator {
+
+    public CalculatorImpl() throws RemoteException {
+
+        super();
+    }
+
+    public int add(int x, int y) throws RemoteException {
+
+        return x + y;
+    }
+
+    public int subtract(int x, int y) throws RemoteException {
+
+        return x - y;
+    }
+}`
+      },
+      {
+        label: "Server", lang: "Java",
+        code: `import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class CalculatorServer {
+
+    public static void main(String[] args) {
+
+        try {
+
+            // Create remote object
+            Calculator calculator = new CalculatorImpl();
+
+            // Create registry
+            Registry registry =
+                    LocateRegistry.createRegistry(1099);
+
+            // Bind object
+            registry.rebind("Calculator", calculator);
+
+            System.out.println("CalculatorServer ready.");
+
+        } catch (RemoteException e) {
+
+            System.err.println("CalculatorServer exception: " + e);
+        }
+    }
+}`
+      },
+      {
+        label: "Client", lang: "Java",
+        code: `import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class CalculatorClient {
+
+    public static void main(String[] args) {
+
+        try {
+
+            // Get registry
+            Registry registry =
+                    LocateRegistry.getRegistry("localhost");
+
+            // Lookup remote object
+            Calculator calculator =
+                    (Calculator) registry.lookup("Calculator");
+
+            // Call methods
+            int result = calculator.add(1, 2);
+
+            System.out.println("1 + 2 = " + result);
+
+            result = calculator.subtract(5, 3);
+
+            System.out.println("5 - 3 = " + result);
+
+        } catch (RemoteException | NotBoundException e) {
+
+            System.out.println("Client exception: " + e);
+        }
+    }
+}`
+      }
+    ]
   },
   {
-    id:9, expNum:6, subLabel:"Waveform 2 / 2",
-    title:"Triangular Waveform Generation via DAC",
-    assignment:"Assignment 6: Generate Waveforms Using DAC on STM32",
-    desc:"Ramp the 12-bit DAC output up and down in steps of 51, producing a triangular wave on PA4.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nvoid delay(void){\n    for(int i = 0; i < 100; i++);\n}\n\nvoid DAC_init(void){\n    RCC->AHB1ENR |= (1 << 0);\n    GPIOA->MODER |=  (3 << 8);\n    RCC->APB1ENR |= (1 << 29);\n    DAC->CR      |= (1 << 0);\n}\n\nint main(void){\n    int val;\n    DAC_init();\n    while(1){\n        for(val = 0; val < 4095; val += 51){ DAC->DHR12R1 = val; delay(); }\n        for(val = 4095; val > 0; val -= 51){ DAC->DHR12R1 = val; delay(); }\n    }\n}`
+    id: 9, expNum: 9,
+    title: "JSP — Current Date & Time",
+    assignment: "Experiment 9: JSP Page",
+    desc: "A simple JSP page that imports java.util.Date and prints the current date, time, and day using a scriptlet with out.println().",
+    lang: "JSP",
+    code: `<%@ page import="java.util.Date" %>
+<html>
+<head>
+    <title>Current Date and Time</title>
+</head>
+<body>
+    <h1>Welcome to the Advance Java</h1>
+    <h3>Current Date, Time and Day</h3>
+
+<%
+    Date d = new Date();
+    out.println(d);
+%>
+
+</body>
+</html>`
   },
+
+  /* ── EXP 10 — Cookies ──────────────────────────────────────────────────── */
   {
-    id:10, expNum:7,
-    title:"GSM Module — Call & SMS Transmission",
-    assignment:"Assignment 7: GSM Module Interfacing with STM32",
-    desc:"Send AT commands over USART2 to make a voice call and transmit an SMS using a GSM module.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nvoid UART2_SendChar(char c){\n    while(!(USART2->SR & (1<<7)));\n    USART2->DR = c;\n}\nvoid UART2_SendString(char *str){\n    while(*str) UART2_SendChar(*str++);\n}\nvoid delay_ms(int ms){\n    for(int i = 0; i < ms*4000; i++);\n}\n\nint main(void){\n    delay_ms(3000);\n    UART2_SendString("AT\\r\\n");\n    delay_ms(2000);\n    UART2_SendString("ATD9876543210;\\r\\n");\n    delay_ms(15000);\n    UART2_SendString("ATH\\r\\n");\n    UART2_SendString("AT+CMGF=1\\r\\n");\n    delay_ms(1000);\n    UART2_SendString("AT+CMGS=\\"9876543210\\"\\r\\n");\n    delay_ms(1000);\n    UART2_SendString("Hello from STM32 GSM Module");\n    UART2_SendChar(26);\n    while(1);\n}`
+    id: 10, expNum: 10, subLabel: "Cookies (1/3)",
+    title: "Servlet Cookie — Login, Profile & Logout",
+    assignment: "Experiment 10: Session Tracking — Cookies",
+    desc: "Cookie-based login flow: LoginServlet sets a cookie on success, ProfileServlet reads it, LogoutServlet expires it. Password: admin123",
+    codes: [
+      {
+        label: "index.html", lang: "HTML",
+        code: `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Servlet Login Example</title>
+</head>
+<body>
+    <h1>Welcome to Login App by Cookie</h1>
+    <a href="login.html">Login</a> |
+    <a href="LogoutServlet">Logout</a> |
+    <a href="ProfileServlet">Profile</a>
+</body>
+</html>`
+      },
+      {
+        label: "login.html", lang: "HTML",
+        code: `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Login Form</title>
+</head>
+<body>
+    <form action="LoginServlet" method="post">
+        Name:
+        <input type="text" name="name">
+        <br><br>
+        Password:
+        <input type="password" name="password">
+        <br><br>
+        <input type="submit" value="Login">
+    </form>
+</body>
+</html>`
+      },
+      {
+        label: "link.html", lang: "HTML",
+        code: `<a href="login.html">Login</a> |
+<a href="LogoutServlet">Logout</a> |
+<a href="ProfileServlet">Profile</a>
+<hr>`
+      },
+      {
+        label: "LoginServlet", lang: "Java",
+        code: `import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/LoginServlet")
+
+public class LoginServlet extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+
+        request.getRequestDispatcher("link.html")
+                .include(request, response);
+
+        String name = request.getParameter("name");
+        String password = request.getParameter("password");
+
+        if ("admin123".equals(password)) {
+
+            out.print("You are successfully logged in!");
+            out.print("<br>Welcome, " + name);
+
+            Cookie ck = new Cookie("name", name);
+            response.addCookie(ck);
+
+        } else {
+
+            out.print("Sorry, username or password error!");
+
+            request.getRequestDispatcher("login.html")
+                    .include(request, response);
+        }
+
+        out.close();
+    }
+}`
+      },
+      {
+        label: "ProfileServlet", lang: "Java",
+        code: `import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/ProfileServlet")
+
+public class ProfileServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+
+        request.getRequestDispatcher("link.html")
+                .include(request, response);
+
+        Cookie ck[] = request.getCookies();
+
+        if (ck != null) {
+
+            boolean found = false;
+
+            for (Cookie c : ck) {
+
+                if (c.getName().equals("name")) {
+
+                    out.print("<b>Welcome to Profile</b>");
+                    out.print("<br>Welcome, " + c.getValue());
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                out.print("Please login first");
+                request.getRequestDispatcher("login.html")
+                        .include(request, response);
+            }
+
+        } else {
+
+            out.print("Please login first");
+            request.getRequestDispatcher("login.html")
+                    .include(request, response);
+        }
+
+        out.close();
+    }
+}`
+      },
+      {
+        label: "LogoutServlet", lang: "Java",
+        code: `import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/LogoutServlet")
+
+public class LogoutServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+
+        request.getRequestDispatcher("link.html")
+                .include(request, response);
+
+        Cookie ck = new Cookie("name", "");
+        ck.setMaxAge(0);
+        response.addCookie(ck);
+
+        out.print("You are successfully logged out!");
+
+        out.close();
+    }
+}`
+      }
+    ]
   },
+
+  /* ── EXP 10 — HTTP / URL Rewriting ─────────────────────────────────────── */
   {
-    id:11, expNum:8,
-    title:"ADC Temperature Reading with LM35",
-    assignment:"Experiment 8: ADC Interfacing — LM35 Temperature Sensor",
-    desc:"Trigger a 12-bit conversion on ADC1, then convert raw value to Celsius using LM35 (10 mV/C).",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n#include <stdio.h>\n\nuint16_t ADC1_Read(void){\n    ADC1->CR2 |= (1<<30);\n    while(!(ADC1->SR & (1<<1)));\n    return ADC1->DR;\n}\n\nint main(void){\n    uint16_t adc_val, temp_x10;\n    while(1){\n        adc_val = ADC1_Read();\n        temp_x10 = (adc_val * 330) / 4095;\n    }\n}`
+    id: 11, expNum: 10, subLabel: "HTTP / URL Rewriting (2/3)",
+    title: "Servlet HTTP — URL Rewriting Session",
+    assignment: "Experiment 10: Session Tracking — URL Rewriting",
+    desc: "URL Rewriting example: FirstServlet appends the username to a hyperlink URL; SecondServlet reads it from the query string.",
+    codes: [
+      {
+        label: "index.html", lang: "HTML",
+        code: `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>First Servlet Form</title>
+</head>
+<body>
+    <form action="FirstServlet" method="get">
+        Name:
+        <input type="text" name="userName"/>
+        <br><br>
+        <input type="submit" value="Submit"/>
+    </form>
+</body>
+</html>`
+      },
+      {
+        label: "FirstServlet", lang: "Java",
+        code: `import java.io.*;
+
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+
+@WebServlet("/FirstServlet")
+
+public class FirstServlet extends HttpServlet {
+
+    public void doGet(HttpServletRequest request,
+            HttpServletResponse response) {
+
+        try {
+
+            response.setContentType("text/html");
+
+            PrintWriter out = response.getWriter();
+
+            String n = request.getParameter("userName");
+
+            out.print("Welcome " + n);
+
+            // URL Rewriting
+            out.print("<br><a href='SecondServlet?uname="
+                    + n + "'>Visit</a>");
+
+            out.close();
+
+        } catch (Exception e) {
+
+            System.out.println(e);
+        }
+    }
+}`
+      },
+      {
+        label: "SecondServlet", lang: "Java",
+        code: `import java.io.*;
+
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+
+@WebServlet("/SecondServlet")
+
+public class SecondServlet extends HttpServlet {
+
+    public void doGet(HttpServletRequest request,
+            HttpServletResponse response) {
+
+        try {
+
+            response.setContentType("text/html");
+
+            PrintWriter out = response.getWriter();
+
+            // getting value from query string
+            String n = request.getParameter("uname");
+
+            out.print("Hello " + n);
+
+            out.close();
+
+        } catch (Exception e) {
+
+            System.out.println(e);
+        }
+    }
+}`
+      }
+    ]
   },
+
+  /* ── EXP 10 — Session Tracking (HttpSession) ────────────────────────────── */
   {
-    id:12, expNum:9,
-    title:"LED Blinking Using Timer",
-    assignment:"Experiment 9: LED Blinking Using Timer on STM32F4",
-    desc:"Toggle the onboard LED on PA5 with XOR in a loop. Extend with TIM2 for precise timing.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nint main(void){\n    RCC->AHB1ENR |= (1 << 0);\n    GPIOA->MODER &= ~(3 << 10);\n    GPIOA->MODER |=  (1 << 10);\n    while(1){\n        GPIOA->ODR ^= (1 << 5);\n        for(volatile int i = 0; i < 500000; i++);\n    }\n}`
+    id: 12, expNum: 10, subLabel: "Session Tracking (3/3)",
+    title: "Servlet HttpSession — Login, Profile & Logout",
+    assignment: "Experiment 10: Session Tracking — HttpSession",
+    desc: "HttpSession-based login: LoginServlet stores name in session, ProfileServlet retrieves it, LogoutServlet invalidates the session. Password: admin123",
+    codes: [
+      {
+        label: "link.html", lang: "HTML",
+        code: `<a href="login.html">Login</a> |
+<a href="LogoutServlet">Logout</a> |
+<a href="ProfileServlet">Profile</a>
+<hr>`
+      },
+      {
+        label: "LoginServlet", lang: "Java",
+        code: `import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+@WebServlet("/LoginServlet")
+
+public class LoginServlet extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+
+        request.getRequestDispatcher("link.html")
+                .include(request, response);
+
+        String name = request.getParameter("name");
+        String password = request.getParameter("password");
+
+        if ("admin123".equals(password)) {
+
+            out.print("Welcome, " + name);
+
+            HttpSession session = request.getSession();
+            session.setAttribute("name", name);
+
+        } else {
+
+            out.print("Sorry, username or password error!");
+
+            request.getRequestDispatcher("login.html")
+                    .include(request, response);
+        }
+
+        out.close();
+    }
+}`
+      },
+      {
+        label: "ProfileServlet", lang: "Java",
+        code: `import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+@WebServlet("/ProfileServlet")
+
+public class ProfileServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+
+        request.getRequestDispatcher("link.html")
+                .include(request, response);
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+
+            String name = (String) session.getAttribute("name");
+
+            out.print("Hello, " + name +
+                    " Welcome to Profile");
+
+        } else {
+
+            out.print("Please login first");
+
+            request.getRequestDispatcher("login.html")
+                    .include(request, response);
+        }
+
+        out.close();
+    }
+}`
+      },
+      {
+        label: "LogoutServlet", lang: "Java",
+        code: `import java.io.IOException;
+import java.io.PrintWriter;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+@WebServlet("/LogoutServlet")
+
+public class LogoutServlet extends HttpServlet {
+
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("text/html");
+
+        PrintWriter out = response.getWriter();
+
+        request.getRequestDispatcher("link.html")
+                .include(request, response);
+
+        HttpSession session = request.getSession(false);
+
+        if (session != null) {
+            session.invalidate();
+        }
+
+        out.print("You are successfully logged out!");
+
+        out.close();
+    }
+}`
+      }
+    ]
   },
-  {
-    id:13, expNum:10,
-    title:"Bluetooth Module — Wireless LED Control",
-    assignment:"Experiment 10: Bluetooth Module Interfacing with STM32",
-    desc:"Receive '1' or '0' via HC-05 Bluetooth module to turn the PA5 onboard LED ON or OFF.",
-    lang:"C",
-    code: `#include "stm32f4xx.h"\n\nchar USART2_ReceiveChar(void){\n    while(!(USART2->SR & USART_SR_RXNE));\n    return (char)USART2->DR;\n}\n\nint main(void){\n    char data;\n    RCC->AHB1ENR |= (1 << 0);\n    GPIOA->MODER &= ~(3 << 10);\n    GPIOA->MODER |=  (1 << 10);\n    while(1){\n        data = USART2_ReceiveChar();\n        if(data == '1') GPIOA->ODR |= (1 << 5);\n        else if(data == '0') GPIOA->ODR &= ~(1 << 5);\n    }\n}`
-  }
 ];
 
-/* ── HELPERS ─────────────────────────────────────────────────────────────── */
+/* ── SYNTAX HIGHLIGHTERS ─────────────────────────────────────────────────── */
 function escHtml(s){
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function highlightC(code){
+function highlightJava(code){
   const e = escHtml(code);
   return e
-    .replace(/(\/\/[^\n]*)/g,'<span class=\'cm\'>$1</span>')
-    .replace(/(\/\*[\s\S]*?\*\/)/g,'<span class=\'cm\'>$1</span>')
-    .replace(/"([^"]*)"/g,'<span class=\'str\'>"$1"</span>')
-    .replace(/\b(#include|#define|#ifndef|#endif|#ifdef)\b/g,'<span class=\'an\'>$1</span>')
-    .replace(/\b(void|int|char|unsigned|volatile|static|return|while|for|if|else|uint16_t|uint8_t|uint32_t)\b/g,'<span class=\'kw\'>$1</span>')
-    .replace(/\b(RCC|GPIOA|GPIOC|GPIOD|USART2|ADC1|DAC|TIM2)\b/g,'<span class=\'cl\'>$1</span>')
-    .replace(/\b(0x[0-9A-Fa-f]+|\d+)\b/g,'<span class=\'num\'>$1</span>');
+    .replace(/(\/\/[^\n]*)/g,"<span class='cm'>$1</span>")
+    .replace(/(\/\*[\s\S]*?\*\/)/g,"<span class='cm'>$1</span>")
+    .replace(/"([^"]*)"/g,"<span class='str'>\"$1\"</span>")
+    .replace(/'(\\?.)'(?!')/g,"<span class='str'>'$1'</span>")
+    .replace(/(@\w+)/g,"<span class='an'>$1</span>")
+    .replace(/\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|var|void|volatile|while|record|sealed|permits|yield)\b/g,"<span class='kw'>$1</span>")
+    .replace(/\b(String|System|Math|Object|Integer|Double|Boolean|Long|Float|Byte|Short|Character|Void|Number|Thread|Runnable|Exception|RuntimeException|IllegalArgumentException|NullPointerException|ArrayList|LinkedList|HashMap|HashSet|TreeMap|TreeSet|List|Map|Set|Queue|Stack|Scanner|BufferedReader|InputStreamReader|PrintWriter|InputStream|OutputStream|File|Path|Optional|Stream|Collectors|Arrays|Collections|Connection|DriverManager|Statement|PreparedStatement|ResultSet|SQLException)\b/g,"<span class='cl'>$1</span>")
+    .replace(/\b(0x[0-9A-Fa-f]+|\d+\.?\d*[fFdDlL]?)\b/g,"<span class='num'>$1</span>");
+}
+
+function highlightSQL(code){
+  const e = escHtml(code);
+  return e
+    // comments
+    .replace(/(--[^\n]*)/g,"<span class='cm'>$1</span>")
+    .replace(/(\/\*[\s\S]*?\*\/)/g,"<span class='cm'>$1</span>")
+    // strings
+    .replace(/'([^']*)'/g,"<span class='str'>'$1'</span>")
+    // keywords
+    .replace(/\b(SELECT|FROM|WHERE|INSERT|INTO|VALUES|UPDATE|SET|DELETE|CREATE|TABLE|DATABASE|DROP|ALTER|ADD|COLUMN|PRIMARY|KEY|FOREIGN|REFERENCES|JOIN|LEFT|RIGHT|INNER|OUTER|ON|AS|AND|OR|NOT|IN|IS|NULL|LIKE|BETWEEN|ORDER|BY|GROUP|HAVING|DISTINCT|COUNT|SUM|AVG|MIN|MAX|LIMIT|OFFSET|INDEX|UNIQUE|DEFAULT|AUTO_INCREMENT|VARCHAR|INT|INTEGER|BIGINT|FLOAT|DOUBLE|BOOLEAN|DATE|DATETIME|TIMESTAMP|TEXT|CHAR|CONSTRAINT|USE|SHOW|DESCRIBE|TRUNCATE|BEGIN|COMMIT|ROLLBACK|TRANSACTION|IF|EXISTS|UNION|ALL|CASE|WHEN|THEN|ELSE|END)\b/gi,"<span class='kw sql-kw'>$1</span>")
+    // numbers
+    .replace(/\b(\d+\.?\d*)\b/g,"<span class='num'>$1</span>");
+}
+
+function highlightHTML(code){
+  const e = escHtml(code);
+  return e
+    // comments
+    .replace(/(&lt;!--[\s\S]*?--&gt;)/g,"<span class='cm'>$1</span>")
+    // doctype
+    .replace(/(&lt;!DOCTYPE[^&]*&gt;)/gi,"<span class='an'>$1</span>")
+    // tags
+    .replace(/(&lt;\/?)(\w[\w-]*)([^&]*?)(\/? *&gt;)/g, (m, open, tag, attrs, close) => {
+      const coloredAttrs = attrs.replace(/(\w[\w-]*)=("[^"]*")/g,
+        "<span class='an'>$1</span>=<span class='str'>$2</span>");
+      return `<span class='kw'>${open}${tag}</span>${coloredAttrs}<span class='kw'>${close}</span>`;
+    })
+    // scriptlet tags for JSP
+    .replace(/(&lt;%[\s\S]*?%&gt;)/g, blk => {
+      const inner = blk
+        .replace(/(&lt;%[=@]?|%&gt;)/g, "<span class='an'>$1</span>")
+        .replace(/\b(Date|out|request|response|session|application|config|pageContext|page|exception)\b/g,"<span class='cl'>$1</span>")
+        .replace(/\b(new|import|String|int|void|if|else|for|while|return)\b/g,"<span class='kw'>$1</span>")
+        .replace(/'([^']*)'/g,"<span class='str'>'$1'</span>");
+      return inner;
+    });
+}
+
+function autoHighlight(code, lang){
+  const l = (lang || '').toLowerCase();
+  if(l === 'sql') return highlightSQL(code);
+  if(l === 'html' || l === 'jsp') return highlightHTML(code);
+  return highlightJava(code);
 }
 
 /* ── CARD FACTORY ────────────────────────────────────────────────────────── */
-const grid       = document.getElementById('experimentsGrid');
-const noResults  = document.getElementById('noResults');
-const noQuery    = document.getElementById('noResultsQuery');
-const countEl    = document.getElementById('resultCount');
+const grid      = document.getElementById('experimentsGrid');
+const noResults = document.getElementById('noResults');
+const noQuery   = document.getElementById('noResultsQuery');
+const countEl   = document.getElementById('resultCount');
+
+/* Normalise: ensure every exp has a `codes` array internally */
+function normaliseCodes(exp){
+  if(exp.codes) return exp.codes;
+  return [{ label: exp.lang || 'Java', lang: exp.lang || 'Java', code: exp.code }];
+}
 
 function createCard(exp, delayMs){
   const card = document.createElement('article');
   card.className = 'exp-card';
   card.style.animationDelay = delayMs + 'ms';
 
+  const codes    = normaliseCodes(exp);
+  const isMulti  = codes.length > 1;
   const subBadge = exp.subLabel ? `<span class="sub-label">${exp.subLabel}</span>` : '';
+
+  /* Build tab buttons HTML (only rendered when multi-code) */
+  const tabsHtml = isMulti
+    ? `<div class="code-tabs" role="tablist">
+        ${codes.map((c, i) => `
+          <button
+            class="code-tab${i === 0 ? ' active' : ''}"
+            role="tab"
+            data-tab="${i}"
+            aria-selected="${i === 0}"
+            aria-label="View ${c.label} code"
+          >
+            <span class="tab-dot tab-dot--${(c.lang||'java').toLowerCase()}"></span>
+            ${escHtml(c.label)}
+          </button>`).join('')}
+       </div>`
+    : '';
+
+  /* Build code panels HTML */
+  const panelsHtml = codes.map((c, i) => `
+    <div class="code-panel${i === 0 ? ' active' : ''}" data-panel="${i}">
+      <span class="code-lang-tag">${escHtml(c.lang || c.label)}</span>
+      <pre class="code-block">${autoHighlight(c.code, c.lang)}</pre>
+    </div>`).join('');
 
   card.innerHTML = `
     <div class="card-header">
@@ -150,16 +1258,52 @@ function createCard(exp, delayMs){
       </button>
     </div>
     <div class="code-wrapper">
-      <span class="code-lang-tag">${exp.lang}</span>
-      <pre class="code-block">${highlightC(exp.code)}</pre>
+      ${tabsHtml}
+      <div class="code-panels">${panelsHtml}</div>
     </div>`;
 
+  /* ── Tab switching ─────────────────────────────────────────────────────── */
+  let activeTab = 0;
+
+  if(isMulti){
+    const tabBtns = card.querySelectorAll('.code-tab');
+    const panels  = card.querySelectorAll('.code-panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.tab, 10);
+        if(idx === activeTab) return;
+
+        /* Slide out current panel */
+        panels[activeTab].classList.remove('active');
+        panels[activeTab].classList.add('exit');
+        tabBtns[activeTab].classList.remove('active');
+        tabBtns[activeTab].setAttribute('aria-selected','false');
+
+        setTimeout(() => panels[activeTab].classList.remove('exit'), 280);
+
+        activeTab = idx;
+
+        /* Slide in new panel */
+        panels[activeTab].classList.add('active');
+        tabBtns[activeTab].classList.add('active');
+        tabBtns[activeTab].setAttribute('aria-selected','true');
+
+        /* Update copy button label to reflect current tab */
+        card.querySelector('.btn-label').textContent = 'Copy';
+        card.querySelector('.copy-btn i').className = 'fa-regular fa-copy';
+        card.querySelector('.copy-btn').classList.remove('copied');
+      });
+    });
+  }
+
+  /* ── Copy button ───────────────────────────────────────────────────────── */
   const btn      = card.querySelector('.copy-btn');
-  const codeEl   = card.querySelector('.code-block');
   const btnLabel = card.querySelector('.btn-label');
-  const icon     = card.querySelector('i');
+  const icon     = card.querySelector('.copy-btn i');
 
   btn.addEventListener('click', e => {
+    /* Ripple */
     const r = document.createElement('span');
     r.className = 'ripple';
     const rect = btn.getBoundingClientRect();
@@ -168,24 +1312,32 @@ function createCard(exp, delayMs){
     btn.appendChild(r);
     r.addEventListener('animationend', () => r.remove());
 
-    navigator.clipboard.writeText(exp.code).then(() => {
+    /* Always copy the currently-active tab */
+    const textToCopy = codes[activeTab].code;
+    const activeLabel = codes[activeTab].label;
+    const codeEl = card.querySelectorAll('.code-panel')[activeTab].querySelector('.code-block');
+
+    navigator.clipboard.writeText(textToCopy).then(() => {
       btn.classList.add('copied');
       icon.className = 'fa-solid fa-check';
       btnLabel.textContent = 'Copied!';
       codeEl.classList.add('flash');
       setTimeout(() => codeEl.classList.remove('flash'), 600);
-      showToast('Code copied!', 'success');
+      showToast(`${activeLabel} code copied!`, 'success');
       setTimeout(() => {
         btn.classList.remove('copied');
         icon.className = 'fa-regular fa-copy';
         btnLabel.textContent = 'Copy';
       }, 2000);
+    }).catch(() => {
+      showToast('Copy failed — try again', 'error');
     });
   });
 
   return card;
 }
 
+/* ── RENDER ──────────────────────────────────────────────────────────────── */
 function renderAll(list){
   grid.innerHTML = '';
   if(!list.length){
@@ -198,6 +1350,7 @@ function renderAll(list){
   list.forEach((exp, i) => grid.appendChild(createCard(exp, i * 45)));
 }
 
+/* ── SEARCH ──────────────────────────────────────────────────────────────── */
 const searchInput = document.getElementById('searchInput');
 const searchClear = document.getElementById('searchClear');
 
@@ -218,6 +1371,7 @@ searchClear.addEventListener('click', () => {
   searchInput.focus();
 });
 
+/* ── TOAST ───────────────────────────────────────────────────────────────── */
 const toastContainer = document.getElementById('toastContainer');
 function showToast(msg, type='success'){
   const t = document.createElement('div');
@@ -231,8 +1385,10 @@ function showToast(msg, type='success'){
   }, 2200);
 }
 
+/* ── NAVBAR SCROLL SHADOW ────────────────────────────────────────────────── */
 window.addEventListener('scroll', () => {
   document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 10);
 }, { passive: true });
 
+/* ── INIT ────────────────────────────────────────────────────────────────── */
 renderAll(experiments);
